@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Book } from './books.model';
+import { Book } from './model/books.model';
 import { Model } from 'mongoose';
+import { IBook } from './interface/books.interface';
+import { CreateBookDTO } from './dto/Createbooks.dto';
 
 @Injectable()
 export class BooksService {
-  constructor(@InjectModel('Book') private readonly BookModel: Model<Book>) {}
+  constructor(@InjectModel('Book') private readonly BookModel: Model<IBook>) {}
 
-  async createBook(doc: Book) {
+  async createBook(doc: CreateBookDTO) {
     const result = await new this.BookModel(doc).save();
     return result.id;
   }
@@ -17,7 +19,7 @@ export class BooksService {
     return { message: book };
   }
 
-  async update(book: Book, id: string) {
+  async update(book: CreateBookDTO, id: string) {
     const bookatualizado = await this.BookModel.findByIdAndUpdate(
       id,
       book,

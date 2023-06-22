@@ -5,7 +5,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { AuthController } from './auth.controller';
 import { UserService } from 'src/user/user.service';
-import { UserSchema } from 'src/user/user.model';
+import { UserSchema } from 'src/user/model/user.model';
 import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({

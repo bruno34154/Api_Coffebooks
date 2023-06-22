@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from './user.model';
+import { User } from './model/user.model';
+import { IUser } from './interface/user.interface';
+import { CreateUserDTO } from './dto/CreateUserDTO.dto';
 import { Model } from 'mongoose';
 import * as bycript from 'bcrypt';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel('User') private readonly UserModel: Model<User>) {}
-  async CreateUser(doc: User) {
+  constructor(@InjectModel('User') private readonly UserModel: Model<IUser>) {}
+  async CreateUser(doc: CreateUserDTO) {
     const saltOnRounds = 10; // diz o numero de saltos que o hash tera
     const hash = await bycript.hash(doc.password, saltOnRounds);
     const user = {
