@@ -3,7 +3,7 @@ import {
   NotAcceptableException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { User } from 'src/user/user.model';
+import { IUser } from 'src/user/interface/user.interface';
 import { UserService } from 'src/user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcript from 'bcrypt';
@@ -27,7 +27,7 @@ export class AuthService {
     throw new UnauthorizedException('email ou senha invalido!!');
   }
 
-  async gerarToken(payload: User) {
+  async gerarToken(payload: IUser) {
     return {
       acess_token: this.jwtService.sign(
         { email: payload.email },
