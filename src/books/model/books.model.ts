@@ -13,7 +13,16 @@ export class Book extends Document {
   cover: string;
 
   @Prop()
+  description: string;
+
+  @Prop()
+  author: string;
+
+  @Prop()
   category: string;
+
+  @Prop()
+  likes: number;
 }
 
 export const BookSchema = SchemaFactory.createForClass(Book);
