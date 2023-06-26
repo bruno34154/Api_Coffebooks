@@ -6,7 +6,10 @@ import {
   Param,
   Post,
   Put,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { BooksService } from './books.service';
 import { CreateBookDTO } from './dto/Createbooks.dto';
 
@@ -24,8 +27,12 @@ export class BooksController {
   }
 
   @Post('createBook')
-  create(@Body() book: CreateBookDTO) {
-    return this.booksService.createBook(book);
+  @UseInterceptors(FileInterceptor('cover'))
+  create(
+    @Body() book: CreateBookDTO,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.booksService.createBook(book, file);
   }
   @Put('update/:id')
   update(@Body() book: CreateBookDTO, @Param() params: any) {
