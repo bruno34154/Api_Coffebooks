@@ -2,6 +2,7 @@ import {
   Injectable,
   BadRequestException,
   ConflictException,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Book } from './model/books.model';
@@ -34,9 +35,15 @@ export class BooksService {
     }
   }
   async findById(id: string) {
-    // ...
-    const book: Book = await this.BookModel.findById(id);
-    return { message: book };
+    try {
+      const book: IBook = await this.BookModel.findById(id);
+      if (!book) {
+        throw new NotFoundException();
+      }
+      return { book: book };
+    } catch (e) {
+      throw new BadRequestException();
+    }
   }
 
   async update(book: CreateBookDTO, id: string) {
@@ -55,17 +62,47 @@ export class BooksService {
     return { message: 'o livro foi removido' };
   }
   async getBooks() {
-    const books = await this.BookModel.find();
-    return books;
+    /*aqui no futuro pode ter uma rota opcional para ordenar por mais likes*/
+    try {
+      const books = await this.BookModel.find();
+      if (!books) {
+        throw new NotFoundException();
+      }
+      return { book: books };
+    } catch (e) {
+      throw new BadRequestException();
+    }
   }
 
   async getCategory(category: string) {
-    const books = await this.BookModel.find();
-    const categoryBook = books.filter((book) => {
-      if (book.category == category) {
-        return book;
+    try {
+      const books = await this.BookModel.find({ category: category });
+      if (!books) {
+        throw new NotFoundException();
       }
-    });
-    return categoryBook;
+      return { books: books };
+    } catch (e) {
+      throw new BadRequestException();
+    }
+  }
+
+  async updateLike(id: string) {
+    try {
+      const book: IBook = await this.BookModel.findById(id);
+      if (!book) {
+        throw new NotFoundException();
+      }
+      book.likes++;
+      const bookUpdate = await this.BookModel.findByIdAndUpdate(
+        id,
+        book,
+      ).exec();
+      return {
+        message: '1 gostei adicionado ao livro com sucesso',
+        book: bookUpdate,
+      };
+    } catch (e) {
+      throw new BadRequestException();
+    }
   }
 }

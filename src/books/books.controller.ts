@@ -48,4 +48,8 @@ export class BooksController {
   getCategory(@Param() params: any) {
     return this.booksService.getCategory(params.category);
   }
+  @Put('likes/:id')
+  updateLikes(@Param() params: any) {
+    return this.booksService.updateLike(params.id);
+  }
 }
