@@ -16,9 +16,9 @@ import { CreateBookDTO } from './dto/Createbooks.dto';
 @Controller('books')
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
-  @Get('get')
-  getBook() {
-    return this.booksService.getBooks();
+  @Get('get/:order')
+  getBook(@Param() params: any) {
+    return this.booksService.getBooks(params.order);
   }
 
   @Get('findById/:id')
