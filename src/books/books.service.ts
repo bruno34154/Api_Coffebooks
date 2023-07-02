@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Book } from './model/books.model';
-import { Model } from 'mongoose';
+import { AnyArray, Model } from 'mongoose';
 import { IBook } from './interface/books.interface';
 import { CreateBookDTO } from './dto/Createbooks.dto';
 import { uploadFiles } from 'src/upload/books.upload';
@@ -47,24 +47,39 @@ export class BooksService {
   }
 
   async update(book: CreateBookDTO, id: string) {
-    const bookatualizado = await this.BookModel.findByIdAndUpdate(
-      id,
-      book,
-    ).exec();
-    return bookatualizado;
-
+    try {
+      const bookatualizado = await this.BookModel.findByIdAndUpdate(
+        id,
+        book,
+      ).exec();
+      if (!bookatualizado) {
+        throw new NotFoundException();
+      }
+      return { book: bookatualizado };
+    } catch (e) {
+      throw new BadRequestException();
+    }
     // ...
   }
 
   async remove(id: string) {
     // ...
-    await this.BookModel.findByIdAndDelete(id).exec();
-    return { message: 'o livro foi removido' };
+    try {
+      const deletedBook = await this.BookModel.findByIdAndDelete(id).exec();
+      if (!deletedBook) {
+        throw new NotFoundException();
+      }
+      return { message: 'o livro foi removido' };
+    } catch (e) {
+      throw new BadRequestException();
+    }
   }
-  async getBooks() {
+  async getBooks(order: any) {
     /*aqui no futuro pode ter uma rota opcional para ordenar por mais likes*/
     try {
-      const books = await this.BookModel.find();
+      const books = await this.BookModel.find().sort({
+        [order]: order == 'title' ? 1 : -1,
+      });
       if (!books) {
         throw new NotFoundException();
       }
@@ -99,7 +114,7 @@ export class BooksService {
       ).exec();
       return {
         message: '1 gostei adicionado ao livro com sucesso',
-        book: bookUpdate,
+        book: book,
       };
     } catch (e) {
       throw new BadRequestException();
