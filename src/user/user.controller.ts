@@ -1,12 +1,14 @@
-import { Controller, Get, Param, Post, Body, Delete } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Delete, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { CreateUserDTO } from './dto/CreateUserDTO.dto';
 import { UserService } from './user.service';
+import { FileInterceptor } from '@nestjs/platform-express';
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
   @Post('createUser')
-  createUser(@Body() user: CreateUserDTO) {
-    return this.userService.CreateUser(user);
+  @UseInterceptors(FileInterceptor('profile'))
+  createUser(@Body() user: CreateUserDTO, @UploadedFile() file: Express.Multer.File) {
+    return this.userService.CreateUser(user, file);
   }
   @Get('find/:email')
   findOneByEmail(@Param() params: any) {
