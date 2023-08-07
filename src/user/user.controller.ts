@@ -18,4 +18,8 @@ export class UserController {
   remove(@Param() params: any) {
     return this.userService.remove(params.id);
   }
+  @Get('get')
+  getUsers(){
+    return this.userService.getUsers();
+  }
 }
