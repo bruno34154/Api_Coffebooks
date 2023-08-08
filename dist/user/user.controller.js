@@ -30,6 +30,9 @@ let UserController = class UserController {
     remove(params) {
         return this.userService.remove(params.id);
     }
+    getUsers() {
+        return this.userService.getUsers();
+    }
 };
 __decorate([
     (0, common_1.Post)('createUser'),
@@ -54,6 +57,12 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "remove", null);
+__decorate([
+    (0, common_1.Get)('get'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], UserController.prototype, "getUsers", null);
 UserController = __decorate([
     (0, common_1.Controller)('user'),
     __metadata("design:paramtypes", [user_service_1.UserService])

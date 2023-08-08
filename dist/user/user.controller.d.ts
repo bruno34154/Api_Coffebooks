@@ -36,5 +36,13 @@ export declare class UserController {
     findOneByEmail(params: any): Promise<import("mongoose").Document<unknown, {}, import("./interface/user.interface").IUser> & Omit<import("./interface/user.interface").IUser & {
         _id: import("mongoose").Types.ObjectId;
     }, never>>;
-    remove(params: any): Promise<string>;
+    remove(params: any): Promise<{
+        message: string;
+    }>;
+    getUsers(): Promise<{
+        message: string;
+        user: (import("mongoose").Document<unknown, {}, import("./interface/user.interface").IUser> & Omit<import("./interface/user.interface").IUser & {
+            _id: import("mongoose").Types.ObjectId;
+        }, never>)[];
+    }>;
 }

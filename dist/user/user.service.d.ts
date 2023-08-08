@@ -36,5 +36,13 @@ export declare class UserService {
     FindoneByemail(email: string): Promise<import("mongoose").Document<unknown, {}, IUser> & Omit<IUser & {
         _id: import("mongoose").Types.ObjectId;
     }, never>>;
-    remove(id: string): Promise<string>;
+    remove(id: string): Promise<{
+        message: string;
+    }>;
+    getUsers(): Promise<{
+        message: string;
+        user: (import("mongoose").Document<unknown, {}, IUser> & Omit<IUser & {
+            _id: import("mongoose").Types.ObjectId;
+        }, never>)[];
+    }>;
 }

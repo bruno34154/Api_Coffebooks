@@ -26,6 +26,9 @@ let UserService = class UserService {
         try {
             const email = await this.UserModel.findOne({ email: doc.email });
             const name = await this.UserModel.findOne({ name: doc.name });
+            if (email || name) {
+                throw new common_1.ConflictException();
+            }
             const saltOnRounds = 10;
             const hash = await bycript.hash(doc.password, saltOnRounds);
             doc.password = hash;
@@ -33,19 +36,44 @@ let UserService = class UserService {
             const profile = await upload.uploadFile();
             doc.profile = profile;
             await new this.UserModel(doc).save();
-            return { message: 'the user was created', user: doc };
+            return { message: 'o usuario foi criado!', user: doc };
         }
         catch (e) {
             throw new common_1.BadRequestException();
         }
     }
     async FindoneByemail(email) {
-        const userFound = await this.UserModel.findOne({ email: email });
-        return userFound;
+        try {
+            const userFound = await this.UserModel.findOne({ email: email });
+            return userFound;
+        }
+        catch (e) {
+            throw new common_1.BadRequestException();
+        }
     }
     async remove(id) {
-        await this.UserModel.findByIdAndDelete(id).exec();
-        return 'usuario deletado!!';
+        try {
+            const user = await this.UserModel.findByIdAndDelete(id).exec();
+            if (!user) {
+                throw new common_1.NotFoundException();
+            }
+            return { message: 'usuario deletado!!' };
+        }
+        catch (e) {
+            throw new common_1.BadRequestException();
+        }
+    }
+    async getUsers() {
+        try {
+            const users = await this.UserModel.find();
+            if (!users) {
+                throw new common_1.NotFoundException();
+            }
+            return { message: 'usuarios encontrados!', user: users };
+        }
+        catch (e) {
+            throw new common_1.BadRequestException();
+        }
     }
 };
 UserService = __decorate([
